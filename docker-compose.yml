@@ -1,0 +1,6 @@
+﻿services:
+  ureeka-backend:
+    image: ureeka-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
