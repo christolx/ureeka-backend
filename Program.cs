@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ureeka_backend.Data;
 using ureeka_backend.Models;
 using ureeka_backend.Services;
@@ -11,7 +12,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen((opt) =>
+{
+    opt.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer",
+    });
+    
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            }, new string[] { }
+        }
+    });
+});
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
@@ -48,7 +74,7 @@ app.UseAuthorization();
 
 var accountGroup = app.MapGroup("account");
 accountGroup.MapIdentityApi<User>();
-accountGroup.MapPost("/logout", async (SignInManager<User> signInManager) => 
+accountGroup.MapPost("/logout", async (SignInManager<User> signInManager) =>
     {
         await signInManager.SignOutAsync();
         return Results.Ok(new { message = "Logged out successfully" });
