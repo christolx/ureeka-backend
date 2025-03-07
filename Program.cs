@@ -46,7 +46,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapIdentityApi<User>();
+app.MapGroup("account").MapIdentityApi<User>();
 app.MapControllers();
 
 app.Run();
