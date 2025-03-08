@@ -73,7 +73,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 var accountGroup = app.MapGroup("account");
-accountGroup.MapIdentityApi<User>();
+accountGroup.MapCustomIdentityApi<User>();
 accountGroup.MapPost("/logout", async (SignInManager<User> signInManager) =>
     {
         await signInManager.SignOutAsync();
