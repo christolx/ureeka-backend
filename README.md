@@ -1,4 +1,3 @@
 -> update connectionstring to your pgsql database in appsettings.json </br>
 -> docker-compose up</br>
--> dotnet ef migrations add IdentityMigration</br>
 -> dotnet ef database update</br>
