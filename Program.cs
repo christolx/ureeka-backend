@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ureeka_backend.Data;
@@ -66,7 +67,7 @@ builder.Services.AddStackExchangeRedisCache(option =>
 });
 
 builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
-
+builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 var app = builder.Build();
 app.UseCors("AllowReactApp");
 
