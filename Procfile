@@ -1,1 +1,1 @@
-﻿   web: dotnet ureeka-backend.dll
+﻿web: dotnet publish -c Release -o $HOME/heroku_output && cd $HOME/heroku_output && dotnet ureeka-backend.dll
