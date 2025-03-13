@@ -24,7 +24,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
-        policy => policy.WithOrigins("http://localhost:5173")
+        policy => policy
+            .WithOrigins(
+                "http://localhost:5173", 
+                "https://foodfund-frontend.vercel.app"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
