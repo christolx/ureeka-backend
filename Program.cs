@@ -71,7 +71,7 @@ builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 var app = builder.Build();
 app.UseCors("AllowReactApp");
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 /*
 if (app.Environment.IsDevelopment())
 {
