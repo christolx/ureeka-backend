@@ -60,8 +60,8 @@ builder.Services.AddSwaggerGen((opt) =>
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
-                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var connectionString = !string.IsNullOrEmpty(databaseUrl) ? databaseUrl : builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>((db) =>
 {
