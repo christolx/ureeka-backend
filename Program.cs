@@ -61,12 +61,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-var connectionString = !string.IsNullOrEmpty(databaseUrl) ? databaseUrl : builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = !string.IsNullOrEmpty(databaseUrl)
+    ? Utilities.BuildConnectionString(databaseUrl)
+    : builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<AppDbContext>((db) =>
-{
-    db.UseNpgsql(connectionString);
-});
+builder.Services.AddDbContext<AppDbContext>((db) => { db.UseNpgsql(connectionString); });
 
 builder.Services.AddIdentityApiEndpoints<User>()
     .AddEntityFrameworkStores<AppDbContext>();
@@ -91,6 +90,7 @@ if (app.Environment.IsDevelopment())
 }
 */
 
+// Always use Swagger. ( url/swagger endpoint )
 app.UseSwagger();
 app.UseSwaggerUI();
 
