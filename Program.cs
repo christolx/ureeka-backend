@@ -30,7 +30,8 @@ builder.Services.AddCors(options =>
                 "https://foodfund-frontend.vercel.app"
             )
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
 builder.Services.AddSwaggerGen((opt) =>
