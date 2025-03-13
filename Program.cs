@@ -60,9 +60,12 @@ builder.Services.AddSwaggerGen((opt) =>
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>((db) =>
 {
-    db.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    db.UseNpgsql(connectionString);
 });
 
 builder.Services.AddIdentityApiEndpoints<User>()
