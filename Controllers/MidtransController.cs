@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -9,6 +10,7 @@ namespace ureeka_backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class MidtransController : ControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -94,7 +96,8 @@ namespace ureeka_backend.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-
+        
+        [AllowAnonymous]
         [HttpPost("notification")]
         public async Task<IActionResult> HandleNotification()
         {
@@ -113,7 +116,7 @@ namespace ureeka_backend.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-
+        
         [HttpGet("status/{orderId}")]
         public async Task<IActionResult> CheckStatus(string orderId)
         {
