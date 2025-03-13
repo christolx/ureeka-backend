@@ -1,2 +1,1 @@
-﻿   web: dotnet run --project ureeka-backend.csproj
-   
+﻿   web: dotnet ureeka-backend.dll
