@@ -8,6 +8,13 @@ using ureeka_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Heroku Port Configuration
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://*:{port}");
+}
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -18,8 +25,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         policy => policy.WithOrigins("http://localhost:5173")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 });
 
 builder.Services.AddSwaggerGen((opt) =>
@@ -33,7 +40,7 @@ builder.Services.AddSwaggerGen((opt) =>
         BearerFormat = "JWT",
         Scheme = "bearer",
     });
-    
+
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
@@ -44,7 +51,8 @@ builder.Services.AddSwaggerGen((opt) =>
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
-            }, new string[] { }
+            },
+            new string[] { }
         }
     });
 });
@@ -71,7 +79,7 @@ builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 var app = builder.Build();
 app.UseCors("AllowReactApp");
 
-// Configure the HTTP request pipeline
+// Configure the HTTP request pipeline.
 /*
 if (app.Environment.IsDevelopment())
 {
