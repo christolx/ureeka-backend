@@ -84,6 +84,18 @@ builder.Services.AddStackExchangeRedisCache(option =>
 builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None; // For cross-site requests
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Required when SameSite=None
+});
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.Secure = CookieSecurePolicy.Always;
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
