@@ -11,8 +11,12 @@ public class AppDbContext : IdentityDbContext<User>
     {
     }
 
+    public DbSet<PaymentResults> PaymentResults { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<PaymentResults>();
     }
 }
