@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using RestSharp.Authenticators;
 using ureeka_backend.Models;
+using System.Security.Claims;
 
 namespace ureeka_backend.Controllers
 {
@@ -16,16 +16,13 @@ namespace ureeka_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MidtransController> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
 
         public MidtransController(
             IConfiguration configuration, 
-            ILogger<MidtransController> logger,
-            UserManager<IdentityUser> userManager)
+            ILogger<MidtransController> logger)
         {
             _configuration = configuration;
             _logger = logger;
-            _userManager = userManager;
         }
 
         [HttpPost("generate-snap-token")]
@@ -38,11 +35,13 @@ namespace ureeka_backend.Controllers
                     return BadRequest(new { error = "OrderId dan Amount harus valid" });
                 }
 
-                // Get the current logged-in user
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
+                // Get the current user's email from claims
+                var userEmail = User.FindFirstValue(ClaimTypes.Email) ?? 
+                                User.FindFirstValue(ClaimTypes.Name); // Fallback to Name if Email claim doesn't exist
+
+                if (string.IsNullOrEmpty(userEmail))
                 {
-                    return Unauthorized(new { error = "User tidak ditemukan" });
+                    return Unauthorized(new { error = "Email pengguna tidak ditemukan" });
                 }
 
                 string serverKey = _configuration["Midtrans:ServerKey"];
@@ -62,7 +61,7 @@ namespace ureeka_backend.Controllers
                     {
                         FirstName = "John",
                         LastName = "Doe",
-                        Email = user.Email, // Use the logged-in user's email
+                        Email = userEmail, // Use the email from claims
                         Phone = "08123456789"
                     }
                 };
