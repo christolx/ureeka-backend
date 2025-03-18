@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -15,11 +16,16 @@ namespace ureeka_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MidtransController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MidtransController(IConfiguration configuration, ILogger<MidtransController> logger)
+        public MidtransController(
+            IConfiguration configuration, 
+            ILogger<MidtransController> logger,
+            UserManager<IdentityUser> userManager)
         {
             _configuration = configuration;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [HttpPost("generate-snap-token")]
@@ -30,6 +36,13 @@ namespace ureeka_backend.Controllers
                 if (string.IsNullOrEmpty(transactionRequest.OrderId) || transactionRequest.Amount <= 0)
                 {
                     return BadRequest(new { error = "OrderId dan Amount harus valid" });
+                }
+
+                // Get the current logged-in user
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized(new { error = "User tidak ditemukan" });
                 }
 
                 string serverKey = _configuration["Midtrans:ServerKey"];
@@ -49,7 +62,7 @@ namespace ureeka_backend.Controllers
                     {
                         FirstName = "John",
                         LastName = "Doe",
-                        Email = "johndoe@example.com",
+                        Email = user.Email, // Use the logged-in user's email
                         Phone = "08123456789"
                     }
                 };
